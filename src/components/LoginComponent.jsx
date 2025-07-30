@@ -3,6 +3,7 @@ import { Eye, EyeOff, Shield } from 'lucide-react';
 
 const LoginComponent = ({ onLogin, onGoToRegistration }) => {
   const [formData, setFormData] = useState({
+    userType: '',
     email: '',
     password: '',
     captcha: ''
@@ -14,19 +15,14 @@ const LoginComponent = ({ onLogin, onGoToRegistration }) => {
     e.preventDefault();
     // Validation logic
     const newErrors = {};
+    if (!formData.userType) newErrors.userType = 'User type is required';
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
     if (!formData.captcha) newErrors.captcha = 'Captcha is required';
 
     if (Object.keys(newErrors).length === 0) {
-      // Determine user type based on email domain
-      let userType = 'ngo';
-      if (formData.email.includes('.gov.in')) {
-        userType = 'admin';
-      } else if (formData.email.includes('.dept.')) {
-        userType = 'departmental';
-      }
-      onLogin(userType, formData.email);
+      // Use the selected user type from dropdown
+      onLogin(formData.userType, formData.email);
     } else {
       setErrors(newErrors);
     }
@@ -47,6 +43,26 @@ const LoginComponent = ({ onLogin, onGoToRegistration }) => {
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Your Account</h2>
           
           <div className="space-y-6">
+            {/* User Type Dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                User Type *
+              </label>
+              <select
+                value={formData.userType}
+                onChange={(e) => setFormData({...formData, userType: e.target.value})}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${
+                  errors.userType ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select User Type</option>
+                <option value="ngo">NGO User</option>
+                <option value="admin">Admin User</option>
+                <option value="departmental">Departmental User</option>
+              </select>
+              {errors.userType && <p className="text-red-500 text-sm mt-1">{errors.userType}</p>}
+            </div>
+
             {/* Email Field */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import LoginComponent from './components/LoginComponent';   
-import NGORegistration from './components/NGORegistration';
+import LoginComponent from './components/LoginComponent';
+import NGORegistration from './components/NGORegistration';   
 import AdminDashboard from './components/AdminDashboard';
 import NGODashboard from './components/NGODashboard';
 import TankSelection from './components/TankSelection';
-import DepartmentalDashboard from './components/DepartmentalDashboard'; 
-import NavBar from './components/Header';
-import Footer from './components/Footer'; 
+import DepartmentalDashboard from './components/DepartmentalDashboard';
+import NavBar from './components/Header'; 
+import Footer from './components/Footer';
+
 
 const App = () => {
   const [currentView, setCurrentView] = useState('login');
@@ -61,6 +62,8 @@ const App = () => {
 
   // Render appropriate component based on current view
   const renderCurrentView = () => {
+    console.log('Current view:', currentView, 'User type:', userType); // Debug log
+    
     switch (currentView) {
       case 'login':
         return (
@@ -123,6 +126,8 @@ const App = () => {
 
   // Determine if we should show navbar and footer
   const showNavFooter = currentView !== 'login' && currentView !== 'ngo-registration';
+
+  console.log('App state - currentView:', currentView, 'userType:', userType, 'userEmail:', userEmail); // Debug log
 
   return (
     <div className="App min-h-screen flex flex-col">
