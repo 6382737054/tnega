@@ -206,22 +206,15 @@ const TankSelection = ({ onBack, onProceed }) => {
                                   <span className="text-sm font-medium text-gray-700">{subActivity.name}</span>
                                 </label>
                                 
-                                <div className="text-xs text-gray-500 ml-6">
-                                  Rate: ₹{subActivity.rate} per {subActivity.unit}
-                                </div>
-                                
                                 {isSelected && (
-                                  <div className="ml-6 grid grid-cols-2 gap-2">
+                                  <div className="ml-6">
                                     <input
-                                      type="number"
-                                      placeholder="Quantity"
+                                      type="text"
+                                      placeholder="Sub Activity"
                                       value={estimations[key]?.quantity || ''}
                                       onChange={(e) => handleEstimationChange(key, 'quantity', e.target.value)}
-                                      className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-sky-500 focus:border-transparent"
+                                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-sky-500 focus:border-transparent"
                                     />
-                                    <div className="px-2 py-1 text-sm bg-gray-50 border border-gray-300 rounded">
-                                      ₹{((estimations[key]?.quantity || 0) * subActivity.rate).toLocaleString()}
-                                    </div>
                                   </div>
                                 )}
                               </div>

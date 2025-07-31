@@ -230,21 +230,7 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Digital India & NIC Logo Section */}
-          <div className="flex items-center justify-center gap-8 mt-6 pt-6 border-t border-slate-700">
-            <div className="text-center">
-              <div className="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg text-xs font-semibold mb-2">
-                DIGITAL INDIA
-              </div>
-              <p className="text-gray-500 text-xs">An Initiative of Government of India</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold mb-2">
-                NIC POWERED
-              </div>
-              <p className="text-gray-500 text-xs">National Informatics Centre</p>
-            </div>
-          </div>
+  
         </div>
       </div>
     </footer>

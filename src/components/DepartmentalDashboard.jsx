@@ -19,6 +19,7 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviewAction, setReviewAction] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [returnTo, setReturnTo] = useState('');
   const [filters, setFilters] = useState({
     dateRange: '',
     status: '',
@@ -26,6 +27,49 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
     taluk: '',
     ngoName: ''
   });
+
+  // Return hierarchy mapping based on departments
+  const returnHierarchy = {
+    Forest: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'forest_range_officer', label: 'Forest Range Officer (L1)' },
+      { value: 'district_forest_officer', label: 'District Forest Officer/Deputy Director/Wildlife Warden (L2)' }
+    ],
+    DTP: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'eo', label: 'EO (L1)' },
+      { value: 'ae_ee', label: 'AE/EE (L2)' }
+    ],
+    Municipality: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'ae_municipal', label: 'AE (L1)' },
+      { value: 'municipal_engineer', label: 'Municipal Engineer (L2)' }
+    ],
+    Corporation: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'ae_corp', label: 'AE (L1)' },
+      { value: 'aee_corp', label: 'AEE (L2)' },
+      { value: 'city_engineer', label: 'City Engineer (L3)' }
+    ],
+    RD: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'ae_rd', label: 'AE (L1)' },
+      { value: 'pd_ee_drda', label: 'PD/EE, DRDA (L2)' },
+      { value: 'district_level', label: 'District Level (L3)' }
+    ],
+    WRD: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'ae_je_wrd', label: 'AE/JE (L1)' },
+      { value: 'aee_wrd', label: 'AEE (L2)' },
+      { value: 'ee_wrd', label: 'EE (L3)' }
+    ],
+    DMA: [
+      { value: 'ngo', label: 'NGO' },
+      { value: 'assistant_dma', label: 'Assistant (L1)' },
+      { value: 'ae_dma', label: 'AE (L2)' },
+      { value: 'municipality_engineer_city_engineer', label: 'Municipality Engineer/City Engineer (L3)' }
+    ]
+  };
 
   // Sample data
   const pendingApplications = [
@@ -39,6 +83,7 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
       district: 'Vellore',
       taluk: 'Gudiyatham',
       block: 'Gudiyatham',
+      department: 'WRD',
       submittedDate: '2025-07-15',
       activities: [
         { name: 'Manual De-silting', quantity: 500, rate: 150, amount: 75000 },
@@ -58,6 +103,7 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
       district: 'Cuddalore',
       taluk: 'Panruti',
       block: 'Panruti',
+      department: 'Forest',
       submittedDate: '2025-07-12',
       activities: [
         { name: 'Major Reconstruction', quantity: 1, rate: 75000, amount: 75000 }
@@ -100,7 +146,8 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
       status: 'Returned',
       processedDate: '2025-07-05',
       processedBy: 'Kumar Swamy',
-      remarks: 'Additional environmental clearance required.'
+      remarks: 'Additional environmental clearance required.',
+      returnedTo: 'NGO'
     }
   ];
 
@@ -125,11 +172,13 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
   };
 
   const handleReviewSubmit = () => {
-    alert(`Application ${selectedApplication.id} has been ${reviewAction.toLowerCase()} successfully!`);
+    const actionText = reviewAction === 'Return' ? `returned to ${returnTo}` : reviewAction.toLowerCase();
+    alert(`Application ${selectedApplication.id} has been ${actionText} successfully!`);
     setShowReviewModal(false);
     setSelectedApplication(null);
     setRemarks('');
     setReviewAction('');
+    setReturnTo('');
   };
 
   const calculateTotalEstimation = (activities) => {
@@ -174,6 +223,10 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                     <p className="mt-1 text-sm text-gray-900">
                       {selectedApplication.district}, {selectedApplication.taluk}, {selectedApplication.block}
                     </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600">Department</label>
+                    <p className="mt-1 text-sm text-gray-900">{selectedApplication.department}</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-600">Submitted Date</label>
@@ -316,6 +369,29 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
               <h3 className="text-lg font-medium text-gray-900 mb-4">
                 {reviewAction} Application
               </h3>
+              
+              {/* Return To Dropdown - only show for Return action */}
+              {reviewAction === 'Return' && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Return To *
+                  </label>
+                  <select
+                    value={returnTo}
+                    onChange={(e) => setReturnTo(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select level to return to</option>
+                    {returnHierarchy[selectedApplication.department]?.map((level) => (
+                      <option key={level.value} value={level.value}>
+                        {level.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Remarks *
@@ -326,8 +402,10 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                   rows="4"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                   placeholder="Enter your remarks..."
+                  required
                 />
               </div>
+              
               {reviewAction === 'Approve' && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -350,10 +428,12 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                   </div>
                 </div>
               )}
+              
               <div className="flex gap-3">
                 <button
                   onClick={handleReviewSubmit}
-                  className="flex-1 bg-gradient-to-r from-sky-600 to-sky-700 text-white py-2 rounded-lg font-semibold hover:from-sky-700 hover:to-sky-800 transition-all"
+                  disabled={reviewAction === 'Return' && !returnTo}
+                  className="flex-1 bg-gradient-to-r from-sky-600 to-sky-700 text-white py-2 rounded-lg font-semibold hover:from-sky-700 hover:to-sky-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Submit {reviewAction}
                 </button>
@@ -362,6 +442,7 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                     setShowReviewModal(false);
                     setRemarks('');
                     setReviewAction('');
+                    setReturnTo('');
                   }}
                   className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 transition-all"
                 >
@@ -477,6 +558,9 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                       Location
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Department
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Estimation
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -504,6 +588,9 @@ const DepartmentalDashboard = ({ userEmail, onLogout }) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {app.district}, {app.taluk}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {app.department}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         ₹{app.totalAmount.toLocaleString()}
