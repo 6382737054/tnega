@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import AppHeader from './components/Header';
 import NewNOCRequest from './pages/TankSelection';
 import NOCDetails from './pages/NocDetails';
+import WorkflowPage from './pages/WorkflowPage';
 // Layout component for pages that need header
 const ProtectedLayout = ({ children }) => {
   return (
@@ -62,6 +63,16 @@ const App = () => {
             element={
               <ProtectedLayout>
                 <Dashboard />
+              </ProtectedLayout>
+            } 
+          />
+             
+          {/* Protected routes - with header */}
+          <Route 
+            path="/workflow" 
+            element={
+              <ProtectedLayout>
+                <WorkflowPage />
               </ProtectedLayout>
             } 
           />

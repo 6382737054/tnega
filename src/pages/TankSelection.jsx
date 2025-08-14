@@ -135,64 +135,64 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen font-['Inter',sans-serif] pt-16 sm:pt-20">
       {/* Breadcrumb Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="flex items-center py-3">
             <div className="flex items-center space-x-2 text-sm">
               <span className="text-gray-500">Tamil Nadu NOC Portal</span>
               <span className="text-gray-300">→</span>
               <span className="text-gray-500">NGO Dashboard</span>
               <span className="text-gray-300">→</span>
-              <span className="text-blue-600 font-medium">Tank Selection</span>
+              <span className="text-indigo-600 font-medium">Tank Selection</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4">
         {/* Clean Page Header */}
         <div className="mb-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Choose tanks for your NOC application</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">Choose tanks for your NOC application</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
             Showing {startIndex + 1}-{Math.min(endIndex, filteredTanks.length)} of {filteredTanks.length} tanks
           </p>
         </div>
 
-        {/* Compact Filter Section */}
+        {/* Responsive Filter Section */}
         <div className="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 space-y-2 sm:space-y-0">
             <div className="flex items-center space-x-2">
-              <Filter className="w-4 h-4 text-blue-600" />
+              <Filter className="w-4 h-4 text-indigo-600" />
               <span className="font-semibold text-gray-800">Filters</span>
             </div>
             <button 
               onClick={clearFilters}
-              className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"
+              className="text-indigo-600 text-sm font-medium hover:text-indigo-700 transition-colors self-start sm:self-auto"
             >
               Clear All
             </button>
           </div>
 
-          <div className="grid grid-cols-6 gap-3">
-            <select value={filters.district} onChange={(e) => handleFilterChange('district', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+            <select value={filters.district} onChange={(e) => handleFilterChange('district', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">All Districts</option>
               {districts.map(district => (<option key={district} value={district}>{district}</option>))}
             </select>
-            <select value={filters.taluk} onChange={(e) => handleFilterChange('taluk', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select value={filters.taluk} onChange={(e) => handleFilterChange('taluk', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">All Taluks</option>
               {taluks.map(taluk => (<option key={taluk} value={taluk}>{taluk}</option>))}
             </select>
-            <select value={filters.block} onChange={(e) => handleFilterChange('block', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select value={filters.block} onChange={(e) => handleFilterChange('block', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">All Blocks</option>
               {blocks.map(block => (<option key={block} value={block}>{block}</option>))}
             </select>
-            <select value={filters.village} onChange={(e) => handleFilterChange('village', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select value={filters.village} onChange={(e) => handleFilterChange('village', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">All Villages</option>
               {villages.map(village => (<option key={village} value={village}>{village}</option>))}
             </select>
-            <select value={filters.department} onChange={(e) => handleFilterChange('department', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <select value={filters.department} onChange={(e) => handleFilterChange('department', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">All Departments</option>
               <option value="WRD">WRD</option>
               <option value="RD">RD</option>
@@ -203,7 +203,7 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
               <option value="DMA">DMA</option>
             </select>
             <div className="relative">
-              <input type="text" placeholder="Search tanks..." value={filters.searchTerm} onChange={(e) => handleFilterChange('searchTerm', e.target.value)} className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+              <input type="text" placeholder="Search tanks..." value={filters.searchTerm} onChange={(e) => handleFilterChange('searchTerm', e.target.value)} className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
               <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" />
             </div>
           </div>
@@ -211,40 +211,40 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
 
         {/* Selected Tanks Summary */}
         {selectedTanks.length > 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-100 border border-indigo-200 rounded-lg p-4 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold">{selectedTanks.length}</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-blue-900">Selected ({selectedTanks.length}) tanks</h3>
-                  <p className="text-sm text-blue-700">{selectedTanks.slice(0, 3).map(tank => tank.name).join(', ')}{selectedTanks.length > 3 && ` +${selectedTanks.length - 3} more`}</p>
+                  <h3 className="font-semibold text-indigo-900">Selected ({selectedTanks.length}) tanks</h3>
+                  <p className="text-sm text-indigo-700">{selectedTanks.slice(0, 3).map(tank => tank.name).join(', ')}{selectedTanks.length > 3 && ` +${selectedTanks.length - 3} more`}</p>
                 </div>
               </div>
-              <button onClick={handleNext} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm">Continue</button>
+              <button onClick={handleNext} className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm">Continue</button>
             </div>
           </div>
         )}
 
-        {/* Tank Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        {/* Responsive Tank Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
           {currentTanks.map((tank) => {
             const isSelected = selectedTanks.find(t => t.id === tank.id);
             return (
-              <div key={tank.id} onClick={() => handleTankSelection(tank)} className={`bg-white rounded-lg shadow-sm border-2 transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105 group ${isSelected ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200'} hover:border-gray-300`}>
-                <div className={`p-2 border-b border-gray-100 ${isSelected ? 'bg-blue-50' : tank.department === 'WRD' ? 'bg-blue-100' : tank.department === 'RD' ? 'bg-green-100' : tank.department === 'GCC' ? 'bg-purple-100' : tank.department === 'Forest' ? 'bg-emerald-100' : tank.department === 'HR & CE' ? 'bg-orange-100' : tank.department === 'DTP' ? 'bg-indigo-100' : tank.department === 'DMA' ? 'bg-red-100' : 'bg-gray-100'}`}>
+              <div key={tank.id} onClick={() => handleTankSelection(tank)} className={`bg-white rounded-lg shadow-sm border-2 transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105 group ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200'} hover:border-gray-300`}>
+                <div className={`p-2 border-b border-gray-100 ${isSelected ? 'bg-indigo-50' : tank.department === 'WRD' ? 'bg-blue-100' : tank.department === 'RD' ? 'bg-green-100' : tank.department === 'GCC' ? 'bg-purple-100' : tank.department === 'Forest' ? 'bg-emerald-100' : tank.department === 'HR & CE' ? 'bg-orange-100' : tank.department === 'DTP' ? 'bg-indigo-100' : tank.department === 'DMA' ? 'bg-red-100' : 'bg-gray-100'}`}>
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
                       <div className="mt-0.5">
-                        {isSelected ? (<CheckCircle className="w-5 h-5 text-blue-600" />) : (<Circle className="w-5 h-5 text-gray-400 group-hover:text-blue-400" />)}
+                        {isSelected ? (<CheckCircle className="w-5 h-5 text-indigo-600" />) : (<Circle className="w-5 h-5 text-gray-400 group-hover:text-indigo-400" />)}
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 text-sm">{tank.name}</h3>
                         <p className="text-xs text-gray-600">{tank.location}</p>
                       </div>
                     </div>
-                    <span className="px-2 py-1 text-xs font-medium rounded-full border bg-red-100 text-black-700 border-red-200">{tank.status}</span>
+                    <span className="px-2 py-1 text-xs font-medium rounded-full border bg-red-100 text-red-700 border-red-200">{tank.status}</span>
                   </div>
                 </div>
                 <div className="p-2">
@@ -266,24 +266,24 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
           })}
         </div>
 
-        {/* Pagination */}
+        {/* Responsive Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white rounded-lg shadow-sm p-4 border border-gray-200 space-y-3 sm:space-y-0">
+            <div className="flex items-center space-x-2 text-sm text-gray-600 text-center sm:text-left">
               <span>Page {currentPage} of {totalPages}</span><span>•</span><span>{filteredTanks.length} total tanks</span>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center justify-center sm:justify-end space-x-2">
               <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                <ChevronLeft className="w-4 h-4" /><span>Previous</span>
+                <ChevronLeft className="w-4 h-4" /><span className="hidden sm:inline">Previous</span>
               </button>
               <div className="flex space-x-1">
                 {[...Array(totalPages)].map((_, index) => {
                   const page = index + 1;
-                  return (<button key={page} onClick={() => handlePageChange(page)} className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page ? 'bg-blue-600 text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'}`}>{page}</button>);
+                  return (<button key={page} onClick={() => handlePageChange(page)} className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page ? 'bg-indigo-600 text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'}`}>{page}</button>);
                 })}
               </div>
               <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                <span>Next</span><ChevronRight className="w-4 h-4" />
+                <span className="hidden sm:inline">Next</span><ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -305,6 +305,8 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
 function NOCDetails({ selectedTanks, onBack }) {
   const [tankConfigs, setTankConfigs] = useState({});
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Activities organized by categories with sub-activities
   const activityCategories = [
@@ -402,7 +404,7 @@ function NOCDetails({ selectedTanks, onBack }) {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmitClick = () => {
     // Validate all tanks have required data
     for (const tank of selectedTanks) {
       const config = tankConfigs[tank.id];
@@ -423,14 +425,25 @@ function NOCDetails({ selectedTanks, onBack }) {
         return;
       }
     }
+    
+    // Show terms modal
+    setShowTermsModal(true);
+  };
+
+  const handleFinalSubmit = () => {
+    if (!agreedToTerms) {
+      alert('Please agree to the Terms & Conditions before submitting');
+      return;
+    }
+    setShowTermsModal(false);
     setShowSuccessModal(true);
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-gray-50 to-blue-100 min-h-screen">
+    <div className="bg-gradient-to-br from-gray-50 via-white to-gray-100 min-h-screen font-['Inter',sans-serif] pt-16 sm:pt-20">
       {/* Breadcrumb Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="flex items-center py-3">
             <button onClick={onBack} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 mr-4 transition-colors">
               <ArrowLeft className="w-4 h-4" />
@@ -442,75 +455,74 @@ function NOCDetails({ selectedTanks, onBack }) {
               <span className="text-gray-300">→</span>
               <span className="text-gray-500">Tank Selection</span>
               <span className="text-gray-300">→</span>
-              <span className="text-blue-600 font-medium">NOC Details</span>
+              <span className="text-indigo-600 font-medium">NOC Details</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">
           <div>
-
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">NOC Application Details</h1>
             <p className="text-gray-600">Complete the form for each selected tank</p>
           </div>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <span className="text-sm text-gray-500">Tanks to configure</span>
-            <div className="text-xl font-bold text-blue-600">{selectedTanks.length}</div>
+            <div className="text-xl font-bold text-indigo-600">{selectedTanks.length}</div>
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {/* Per Tank Configuration */}
           {selectedTanks.map((tank, index) => (
             <div key={tank.id} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
               {/* Tank Header */}
               <div className={`p-4 ${tank.department === 'WRD' ? 'bg-blue-100' : tank.department === 'RD' ? 'bg-green-100' : tank.department === 'GCC' ? 'bg-purple-100' : tank.department === 'Forest' ? 'bg-emerald-100' : tank.department === 'HR & CE' ? 'bg-orange-100' : tank.department === 'DTP' ? 'bg-indigo-100' : tank.department === 'DMA' ? 'bg-red-100' : 'bg-gray-100'}`}>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Tank #{index + 1}: {tank.name}</h3>
                     <p className="text-sm text-gray-600">{tank.location} - {tank.department}</p>
                   </div>
-                  <span className="text-sm text-gray-600">ID: {tank.id}</span>
+                  <span className="text-sm text-gray-600 self-start sm:self-auto">ID: {tank.id}</span>
                 </div>
               </div>
 
-              <div className="p-6 space-y-6">
-                {/* Activity Categories in Single Row */}
+              <div className="p-4 sm:p-6 space-y-6">
+                {/* Compact Activity Categories */}
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-4">Select Activities</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     {activityCategories.map((category) => (
-                      <div key={category.id} className="bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-all duration-200 h-80 flex flex-col">
+                      <div key={category.id} className="bg-white border-2 border-gray-200 rounded-lg p-3 hover:border-indigo-300 transition-all duration-200 h-80 flex flex-col">
                         <div className="flex flex-col h-full">
                           {/* Category Header */}
-                          <div className="border-b border-gray-100 pb-2 mb-3">
+                          <div className="border-b border-gray-100 pb-2 mb-3 flex-shrink-0">
                             <h5 className="font-semibold text-gray-800 text-sm leading-tight">{category.title}</h5>
                           </div>
                           
                           {/* Sub-activities or main category checkbox */}
-                          <div className="flex-1 overflow-y-auto">
+                          <div className="flex-1 overflow-y-auto min-h-0">
                             {category.subActivities.length > 0 ? (
                               <div className="space-y-1">
-                                {/* Chunk sub-activities into groups of 3 for better display */}
-                                {category.subActivities.map((subActivity, index) => {
+                                {category.subActivities.map((subActivity) => {
                                   const isSelected = tankConfigs[tank.id]?.selectedActivities?.[category.id]?.includes(subActivity);
                                   return (
                                     <div 
                                       key={subActivity}
                                       onClick={() => handleActivityToggle(tank.id, category.id, subActivity)}
                                       className={`flex items-start space-x-2 p-1.5 rounded cursor-pointer transition-colors ${
-                                        isSelected ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
-                                      } ${index % 3 === 2 ? 'mb-2' : ''}`}
+                                        isSelected ? 'bg-indigo-50 border border-indigo-200' : 'hover:bg-gray-50'
+                                      }`}
                                     >
                                       {isSelected ? (
-                                        <CheckSquare className="w-3 h-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                                        <CheckSquare className="w-3 h-3 text-indigo-600 mt-0.5 flex-shrink-0" />
                                       ) : (
                                         <Square className="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" />
                                       )}
                                       <span className={`text-xs leading-tight ${
-                                        isSelected ? 'text-blue-900 font-medium' : 'text-gray-700'
+                                        isSelected ? 'text-indigo-900 font-medium' : 'text-gray-700'
                                       }`}>
                                         {subActivity}
                                       </span>
@@ -522,16 +534,16 @@ function NOCDetails({ selectedTanks, onBack }) {
                               <div 
                                 onClick={() => handleActivityToggle(tank.id, category.id)}
                                 className={`flex items-center space-x-2 p-2 rounded cursor-pointer transition-colors ${
-                                  tankConfigs[tank.id]?.selectedActivities?.[category.id] === true ? 'bg-blue-50 border border-blue-200' : 'hover:bg-gray-50'
+                                  tankConfigs[tank.id]?.selectedActivities?.[category.id] === true ? 'bg-indigo-50 border border-indigo-200' : 'hover:bg-gray-50'
                                 }`}
                               >
                                 {tankConfigs[tank.id]?.selectedActivities?.[category.id] === true ? (
-                                  <CheckSquare className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                                  <CheckSquare className="w-4 h-4 text-indigo-600 flex-shrink-0" />
                                 ) : (
                                   <Square className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                 )}
                                 <span className={`text-xs ${
-                                  tankConfigs[tank.id]?.selectedActivities?.[category.id] === true ? 'text-blue-900 font-medium' : 'text-gray-700'
+                                  tankConfigs[tank.id]?.selectedActivities?.[category.id] === true ? 'text-indigo-900 font-medium' : 'text-gray-700'
                                 }`}>
                                   Select this category
                                 </span>
@@ -544,8 +556,8 @@ function NOCDetails({ selectedTanks, onBack }) {
                   </div>
                 </div>
 
-                {/* Amount and File Uploads */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Amount and File Uploads - Responsive Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {/* Lumpsum Amount */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Lumpsum Amount (₹)</label>
@@ -554,22 +566,22 @@ function NOCDetails({ selectedTanks, onBack }) {
                       value={tankConfigs[tank.id]?.lumpsumAmount || ''}
                       onChange={(e) => handleAmountChange(tank.id, e.target.value)}
                       placeholder="Enter amount"
-                      className="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 focus:bg-white transition-all duration-200"
+                      className="w-full px-3 py-2 text-sm border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-indigo-50 focus:bg-white transition-all duration-200"
                     />
                   </div>
 
                   {/* Before Photo Upload */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Before Photo *</label>
-                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center hover:border-blue-400 transition-colors bg-blue-50 hover:bg-blue-100">
+                    <div className="border-2 border-dashed border-indigo-300 rounded-lg p-3 text-center hover:border-indigo-400 transition-colors bg-indigo-50 hover:bg-indigo-100">
                       {tankConfigs[tank.id]?.beforePhoto ? (
                         <div className="space-y-1">
-                          <div className="text-green-600 font-medium text-xs">{tankConfigs[tank.id].beforePhoto.name}</div>
+                          <div className="text-green-600 font-medium text-xs truncate">{tankConfigs[tank.id].beforePhoto.name}</div>
                           <div className="text-xs text-gray-500">Photo uploaded</div>
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <Upload className="w-5 h-5 text-blue-400 mx-auto" />
+                          <Upload className="w-5 h-5 text-indigo-400 mx-auto" />
                           <div className="text-gray-600 text-xs">Upload Photo</div>
                         </div>
                       )}
@@ -580,7 +592,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                         className="hidden"
                         id={`before-photo-${tank.id}`}
                       />
-                      <label htmlFor={`before-photo-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-blue-300 rounded text-xs font-medium text-blue-700 bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+                      <label htmlFor={`before-photo-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-indigo-300 rounded text-xs font-medium text-indigo-700 bg-white hover:bg-indigo-50 cursor-pointer transition-colors">
                         Choose Photo
                       </label>
                     </div>
@@ -589,15 +601,15 @@ function NOCDetails({ selectedTanks, onBack }) {
                   {/* KML File Upload */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">KML File (Optional)</label>
-                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center hover:border-blue-400 transition-colors bg-blue-50 hover:bg-blue-100">
+                    <div className="border-2 border-dashed border-indigo-300 rounded-lg p-3 text-center hover:border-indigo-400 transition-colors bg-indigo-50 hover:bg-indigo-100">
                       {tankConfigs[tank.id]?.kmlFile ? (
                         <div className="space-y-1">
-                          <div className="text-green-600 font-medium text-xs">{tankConfigs[tank.id].kmlFile.name}</div>
+                          <div className="text-green-600 font-medium text-xs truncate">{tankConfigs[tank.id].kmlFile.name}</div>
                           <div className="text-xs text-gray-500">File uploaded</div>
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <Upload className="w-5 h-5 text-blue-400 mx-auto" />
+                          <Upload className="w-5 h-5 text-indigo-400 mx-auto" />
                           <div className="text-gray-600 text-xs">Upload KML</div>
                         </div>
                       )}
@@ -608,7 +620,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                         className="hidden"
                         id={`kml-upload-${tank.id}`}
                       />
-                      <label htmlFor={`kml-upload-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-blue-300 rounded text-xs font-medium text-blue-700 bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+                      <label htmlFor={`kml-upload-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-indigo-300 rounded text-xs font-medium text-indigo-700 bg-white hover:bg-indigo-50 cursor-pointer transition-colors">
                         Choose File
                       </label>
                     </div>
@@ -617,15 +629,15 @@ function NOCDetails({ selectedTanks, onBack }) {
                   {/* Project Proposal Upload */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Project Proposal *</label>
-                    <div className="border-2 border-dashed border-blue-300 rounded-lg p-3 text-center hover:border-blue-400 transition-colors bg-blue-50 hover:bg-blue-100">
+                    <div className="border-2 border-dashed border-indigo-300 rounded-lg p-3 text-center hover:border-indigo-400 transition-colors bg-indigo-50 hover:bg-indigo-100">
                       {tankConfigs[tank.id]?.projectProposal ? (
                         <div className="space-y-1">
-                          <div className="text-green-600 font-medium text-xs">{tankConfigs[tank.id].projectProposal.name}</div>
+                          <div className="text-green-600 font-medium text-xs truncate">{tankConfigs[tank.id].projectProposal.name}</div>
                           <div className="text-xs text-gray-500">File uploaded</div>
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <Upload className="w-5 h-5 text-blue-400 mx-auto" />
+                          <Upload className="w-5 h-5 text-indigo-400 mx-auto" />
                           <div className="text-gray-600 text-xs">Upload Proposal</div>
                         </div>
                       )}
@@ -636,7 +648,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                         className="hidden"
                         id={`proposal-upload-${tank.id}`}
                       />
-                      <label htmlFor={`proposal-upload-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-blue-300 rounded text-xs font-medium text-blue-700 bg-white hover:bg-blue-50 cursor-pointer transition-colors">
+                      <label htmlFor={`proposal-upload-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-indigo-300 rounded text-xs font-medium text-indigo-700 bg-white hover:bg-indigo-50 cursor-pointer transition-colors">
                         Choose File
                       </label>
                     </div>
@@ -644,10 +656,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                 </div>
 
                 {/* Tank Summary */}
-                <div className="bg-gray-50 rounded-lg p-3 text-xs text-gray-600">
-                  <strong>Summary:</strong> {Object.keys(tankConfigs[tank.id]?.selectedActivities || {}).length} activity categories selected, 
-               
-                </div>
+           
               </div>
             </div>
           ))}
@@ -655,17 +664,108 @@ function NOCDetails({ selectedTanks, onBack }) {
           {/* Global Submit Button */}
           <div className="text-center pt-6">
             <button
-              onClick={handleSubmit}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+              onClick={handleSubmitClick}
+              className="bg-green-600 hover:bg-green-700 text-white px-6 sm:px-8 py-3 rounded-xl font-semibold text-base sm:text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Submit All NOC Applications ({selectedTanks.length} tanks)
             </button>
           </div>
         </div>
 
+        {/* Terms & Conditions Modal */}
+        {showTermsModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-purple-600">
+                <h3 className="text-lg font-semibold text-white">Terms & Conditions - NOC for Water Body Management</h3>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[60vh]">
+                <div className="space-y-4 text-sm text-gray-700">
+                  <p className="font-medium text-gray-900">By submitting this application, the organisation agrees to:</p>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">1</span>
+                      <p>Undertake only the approved activities at approved locations.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">2</span>
+                      <p>Follow all laws, environmental norms, and departmental guidelines.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">3</span>
+                      <p>Maintain quality and safety standards, without harming the water body or surroundings.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">4</span>
+                      <p>Allow government inspections and accept that the NOC may be revoked for non-compliance or false information.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">5</span>
+                      <p>Submit required progress and completion reports.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">6</span>
+                      <p>Make no ownership or exclusive claims over the water body.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">7</span>
+                      <p>Bear all costs unless otherwise sanctioned in writing.</p>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3">
+                      <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-semibold">8</span>
+                      <p>Take full responsibility for damages caused and indemnify the Government.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-4 mt-6">
+                    <div className="flex items-start space-x-3">
+                      <input 
+                        type="checkbox" 
+                        id="agreeTerms"
+                        checked={agreedToTerms}
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        className="mt-1 w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      />
+                      <label htmlFor="agreeTerms" className="text-sm font-medium text-gray-900 cursor-pointer">
+                        I have read and agree to the full Terms & Conditions. 
+                        <a href="#" className="text-indigo-600 hover:text-indigo-800 underline ml-1">(Link to full version)</a>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={() => setShowTermsModal(false)}
+                  className="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleFinalSubmit}
+                  disabled={!agreedToTerms}
+                  className="px-6 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors font-medium"
+                >
+                  Submit Applications
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Success Modal */}
         {showSuccessModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl p-8 mx-4 max-w-md w-full transform transition-all">
               <div className="text-center">
                 <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
@@ -680,7 +780,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                     setShowSuccessModal(false);
                     window.location.href = '/dashboard';
                   }}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                  className="w-full bg-red-600 hover:bg-red-200 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                 >
                   Close
                 </button>
