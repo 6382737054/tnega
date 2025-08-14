@@ -1,154 +1,88 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginComponent from './components/LoginComponent';
-import NGORegistration from './components/NGORegistration';   
-import AdminDashboard from './components/AdminDashboard';
-import NGODashboard from './components/NGODashboard';
-import TankSelection from './components/TankSelection';
-import DepartmentalDashboard from './components/DepartmentalDashboard';
-import NavBar from './components/Header'; 
-import Footer from './components/Footer';
+import NGORegistration from './components/Register';
+import Dashboard from './pages/Dashboard';
+import AppHeader from './components/Header';
+import NewNOCRequest from './pages/TankSelection';
+import NOCDetails from './pages/NocDetails';
+// Layout component for pages that need header
+const ProtectedLayout = ({ children }) => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <AppHeader />
+      {children}
+    </div>
+  );
+};
 
+// Layout component for auth pages (no header)
+const AuthLayout = ({ children }) => {
+  return (
+    <div className="min-h-screen">
+      {children}
+    </div>
+  );
+};
 
 const App = () => {
-  const [currentView, setCurrentView] = useState('login');
-  const [userType, setUserType] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-
-  // Handle login
-  const handleLogin = (type, email) => {
-    console.log('Login attempt:', type, email); // Debug log
-    setUserType(type);
-    setUserEmail(email);
-    
-    // Route to appropriate dashboard based on user type
-    switch (type) {
-      case 'admin':
-        setCurrentView('admin-dashboard');
-        break;
-      case 'ngo':
-        setCurrentView('ngo-dashboard');
-        break;
-      case 'departmental':
-        setCurrentView('departmental-dashboard');
-        break;
-      default:
-        setCurrentView('login');
-    }
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    setCurrentView('login');
-    setUserType('');
-    setUserEmail('');
-  };
-
-  // Navigation handlers
-  const goToRegistration = () => {
-    setCurrentView('ngo-registration');
-  };
-
-  const goToLogin = () => {
-    setCurrentView('login');
-  };
-
-  const goToTankSelection = () => {
-    setCurrentView('tank-selection');
-  };
-
-  const goBackToNGODashboard = () => {
-    setCurrentView('ngo-dashboard');
-  };
-
-  // Render appropriate component based on current view
-  const renderCurrentView = () => {
-    console.log('Current view:', currentView, 'User type:', userType); // Debug log
-    
-    switch (currentView) {
-      case 'login':
-        return (
-          <LoginComponent 
-            onLogin={handleLogin}
-            onGoToRegistration={goToRegistration}
-          />
-        );
-
-      case 'ngo-registration':
-        return (
-          <NGORegistration 
-            onBack={goToLogin}
-            onRegistrationComplete={goToLogin}
-          />
-        );
-
-      case 'admin-dashboard':
-        return (
-          <AdminDashboard 
-            userEmail={userEmail}
-            onLogout={handleLogout}
-          />
-        );
-
-      case 'ngo-dashboard':
-        return (
-          <NGODashboard 
-            userEmail={userEmail}
-            onLogout={handleLogout}
-            onNewNOCRequest={goToTankSelection}
-          />
-        );
-
-      case 'tank-selection':
-        return (
-          <TankSelection 
-            onBack={goBackToNGODashboard}
-            onProceed={goBackToNGODashboard}
-          />
-        );
-
-      case 'departmental-dashboard':
-        return (
-          <DepartmentalDashboard 
-            userEmail={userEmail}
-            onLogout={handleLogout}
-          />
-        );
-
-      default:
-        return (
-          <LoginComponent 
-            onLogin={handleLogin}
-            onGoToRegistration={goToRegistration}
-          />
-        );
-    }
-  };
-
-  // Determine if we should show navbar and footer
-  const showNavFooter = currentView !== 'login' && currentView !== 'ngo-registration';
-
-  console.log('App state - currentView:', currentView, 'userType:', userType, 'userEmail:', userEmail); // Debug log
-
   return (
-    <div className="App min-h-screen flex flex-col">
-      {/* Navigation Bar - shown on all pages except login and registration */}
-      {showNavFooter && (
-        <NavBar 
-          userType={userType}
-          userEmail={userEmail}
-          onLogout={handleLogout}
-          currentView={currentView}
-        />
-      )}
-      
-      {/* Main Content */}
-      <main className="flex-grow">
-        {renderCurrentView()}
-      </main>
-      
-      {/* Footer - shown on all pages except login and registration */}
-      {showNavFooter && <Footer />}
-    </div>
+    <Router>
+      <div className="App min-h-screen">
+        <Routes>
+          {/* Auth routes - no header */}
+          <Route 
+            path="/" 
+            element={
+              <AuthLayout>
+                <LoginComponent />
+              </AuthLayout>
+            } 
+          />
+          <Route 
+            path="/login" 
+            element={
+              <AuthLayout>
+                <LoginComponent />
+              </AuthLayout>
+            } 
+          />
+          <Route 
+            path="/register" 
+            element={
+              <AuthLayout>
+                <NGORegistration />
+              </AuthLayout>
+            } 
+          />
+          
+          {/* Protected routes - with header */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedLayout>
+                <Dashboard />
+              </ProtectedLayout>
+            } 
+          />
+          <Route 
+            path="/new-noc-request" 
+            element={
+              <ProtectedLayout>
+                <NewNOCRequest />
+              </ProtectedLayout>
+            } 
+          />'  <Route 
+            path="/noc-details" 
+            element={
+              <ProtectedLayout>
+                <NOCDetails />
+              </ProtectedLayout>
+            } 
+          />'
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
