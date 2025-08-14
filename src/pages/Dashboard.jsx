@@ -432,7 +432,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 
-                {app.status === 'approved' && (
+                {userRole === 'ngo' && app.status === 'approved' && (
                   <div className="flex justify-end">
                     <button
                       onClick={() => handleDownload(app.id)}
@@ -442,6 +442,29 @@ export default function Dashboard() {
                       <Download className="w-4 h-4 mr-2" />
                       Download Certificate
                     </button>
+                  </div>
+                )}
+                
+                {userRole === 'department' && (
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => handleWorkflowView(app.id)}
+                      className="inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 border border-indigo-200 rounded-lg hover:bg-indigo-200 transition-all duration-200"
+                      title="View Workflow"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View
+                    </button>
+                    {app.status === 'approved' && (
+                      <button
+                        onClick={() => handleDownload(app.id)}
+                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-green-700 bg-green-100 border border-green-200 rounded-lg hover:bg-green-200 transition-all duration-200"
+                        title="Download NOC Certificate"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
