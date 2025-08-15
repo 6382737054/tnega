@@ -6,8 +6,10 @@ export default function WorkflowPage() {
   const [remarks, setRemarks] = useState('');
   const [uploadedFile, setUploadedFile] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [returnTo, setReturnTo] = useState('');
+  const [showNGOProfile, setShowNGOProfile] = useState(false);
 
-  // Sample NOC data - using the same structure from dashboard
+  // Sample NOC data
   const nocData = {
     id: 'NOC001',
     tankName: 'Palar Tank',
@@ -23,6 +25,15 @@ export default function WorkflowPage() {
     kmlFile: 'tank_location.kml'
   };
 
+  // NGO Profile data
+  const ngoProfile = {
+    organizationName: 'Tamil Nadu Water Conservation NGO',
+    email: 'contact@tnwaterconservation.org',
+    registrationCertificate: 'ngo_registration_cert.pdf',
+    panCard: 'ngo_pan_card.pdf',
+    similarProjectDetails: 'similar_project_details.pdf'
+  };
+
   const handleBack = () => {
     window.location.href = '/dashboard';
   };
@@ -32,6 +43,7 @@ export default function WorkflowPage() {
     setShowModal(true);
     setRemarks('');
     setUploadedFile(null);
+    setReturnTo('');
   };
 
   const handleFileUpload = (file) => {
@@ -39,18 +51,23 @@ export default function WorkflowPage() {
   };
 
   const handleViewPhoto = () => {
-    // In real implementation, this would open the actual photo
     alert('Opening before photo: ' + nocData.beforePhoto);
   };
 
   const handleViewProposal = () => {
-    // In real implementation, this would open the actual document
     alert('Opening project proposal: ' + nocData.projectProposal);
   };
 
   const handleViewKML = () => {
-    // In real implementation, this would download the actual KML file
     alert('Downloading KML file: ' + nocData.kmlFile);
+  };
+
+  const handleViewNGOProfile = () => {
+    setShowNGOProfile(true);
+  };
+
+  const handleViewNGODocument = (docName) => {
+    alert(`Opening NGO document: ${docName}`);
   };
 
   const handleSubmit = () => {
@@ -64,13 +81,23 @@ export default function WorkflowPage() {
       return;
     }
 
-    // Process the action
+    if (selectedAction === 'return' && !returnTo) {
+      alert('Please select where to return the application');
+      return;
+    }
+
     console.log('Action:', selectedAction);
     console.log('Remarks:', remarks);
     console.log('File:', uploadedFile);
+    if (selectedAction === 'return') {
+      console.log('Return to:', returnTo);
+    }
 
-    // Show success and redirect
-    alert(`NOC ${selectedAction}d successfully!`);
+    if (selectedAction === 'return') {
+      alert(`Application returned to ${returnTo} successfully!`);
+    } else {
+      alert(`NOC ${selectedAction}d successfully!`);
+    }
     setShowModal(false);
     window.location.href = '/dashboard';
   };
@@ -101,7 +128,7 @@ export default function WorkflowPage() {
         };
       case 'return':
         return {
-          title: 'Return to NGO',
+          title: 'Return Application',
           color: 'orange',
           bgColor: 'bg-orange-50',
           borderColor: 'border-orange-200',
@@ -151,7 +178,7 @@ export default function WorkflowPage() {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
               <div>
                 <h2 className="text-lg sm:text-xl font-semibold text-white">NOC ID: {nocData.id}</h2>
-                <p className="text-indigo-100 text-sm">Status: {nocData.status.charAt(0).toUpperCase() + nocData.status.slice(1)}</p>
+             
               </div>
               <div className="text-left sm:text-right">
                 <span className="text-indigo-100 text-sm">Submitted on</span>
@@ -191,7 +218,16 @@ export default function WorkflowPage() {
                   
                   <div>
                     <label className="text-sm font-medium text-gray-600">Submitted By</label>
-                    <p className="text-base text-gray-900">{nocData.submittedBy}</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-base text-gray-900">{nocData.submittedBy}</p>
+                      <button
+                        onClick={handleViewNGOProfile}
+                        className="inline-flex items-center px-3 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 border border-indigo-200 rounded-lg hover:bg-indigo-200 transition-colors"
+                      >
+                        <Eye className="w-3 h-3 mr-1" />
+                        View Profile
+                      </button>
+                    </div>
                   </div>
                   
                   <div>
@@ -314,7 +350,7 @@ export default function WorkflowPage() {
               className="flex items-center justify-center space-x-3 p-4 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <RotateCcw className="w-5 h-5" />
-              <span className="font-medium">Return to NGO</span>
+              <span className="font-medium">Return</span>
             </button>
           </div>
         </div>
@@ -344,6 +380,24 @@ export default function WorkflowPage() {
                     placeholder={`Enter ${actionConfig.label.toLowerCase()}...`}
                   />
                 </div>
+
+                {/* Return To Dropdown for Return Action */}
+                {selectedAction === 'return' && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Return To <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={returnTo}
+                      onChange={(e) => setReturnTo(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    >
+                      <option value="">Select where to return</option>
+                      <option value="AE">Assistant Engineer (AE)</option>
+                      <option value="NGO">NGO</option>
+                    </select>
+                  </div>
+                )}
 
                 {/* File Upload for Approve/Reject */}
                 {actionConfig.requiresFile && (
@@ -391,7 +445,123 @@ export default function WorkflowPage() {
                 >
                   {selectedAction === 'approve' ? 'Approve Application' : 
                    selectedAction === 'reject' ? 'Reject Application' : 
-                   'Return to NGO'}
+                   'Return Application'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* NGO Profile Modal */}
+        {showNGOProfile && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-indigo-600 to-purple-600">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Building2 className="w-6 h-6 text-white" />
+                    <h3 className="text-lg font-semibold text-white">NGO Profile</h3>
+                  </div>
+                  <button
+                    onClick={() => setShowNGOProfile(false)}
+                    className="text-white hover:text-gray-200 transition-colors"
+                  >
+                    <XCircle className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                <div className="space-y-6">
+                  {/* Basic Information */}
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Organization Details</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Organization Name</label>
+                        <p className="text-base font-semibold text-gray-900">{ngoProfile.organizationName}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-600">Email</label>
+                        <p className="text-base text-indigo-600">{ngoProfile.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Documents */}
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <FileText className="w-5 h-5 text-blue-600 mr-2" />
+                      Registration Documents
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">Registration Certificate</p>
+                            <p className="text-xs text-gray-500">{ngoProfile.registrationCertificate}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleViewNGODocument(ngoProfile.registrationCertificate)}
+                          className="inline-flex items-center px-3 py-1 text-xs font-medium text-green-700 bg-green-100 border border-green-200 rounded-lg hover:bg-green-200 transition-colors"
+                        >
+                          <Eye className="w-3 h-3 mr-1" />
+                          View
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-orange-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">PAN Card Copy</p>
+                            <p className="text-xs text-gray-500">{ngoProfile.panCard}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleViewNGODocument(ngoProfile.panCard)}
+                          className="inline-flex items-center px-3 py-1 text-xs font-medium text-orange-700 bg-orange-100 border border-orange-200 rounded-lg hover:bg-orange-200 transition-colors"
+                        >
+                          <Eye className="w-3 h-3 mr-1" />
+                          View
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <FileText className="w-4 h-4 text-purple-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">Similar Project Details</p>
+                            <p className="text-xs text-gray-500">{ngoProfile.similarProjectDetails}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleViewNGODocument(ngoProfile.similarProjectDetails)}
+                          className="inline-flex items-center px-3 py-1 text-xs font-medium text-purple-700 bg-purple-100 border border-purple-200 rounded-lg hover:bg-purple-200 transition-colors"
+                        >
+                          <Eye className="w-3 h-3 mr-1" />
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end">
+                <button
+                  onClick={() => setShowNGOProfile(false)}
+                  className="px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Close
                 </button>
               </div>
             </div>
