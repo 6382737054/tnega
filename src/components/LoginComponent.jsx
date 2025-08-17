@@ -71,41 +71,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
-      {/* Header - Always at top */}
-      <div className="w-full px-4 py-4 sm:py-6">
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col overflow-hidden">
+      {/* Header - Fixed height */}
+      <div className="w-full px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-center">
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
               <img src="images/tnlogo.png" alt="Tamil Nadu Government Logo" className="w-full h-full object-contain" />
             </div>
             <div className="text-center sm:text-left">
-              <h1 className="text-base sm:text-lg font-bold text-[#036FAA] font-['Poppins'] leading-tight">Tamil Nadu Government</h1>
-              <h2 className="text-xs sm:text-sm text-[#036FAA] font-medium font-['Poppins'] leading-tight">NOC Application System</h2>
+              <h1 className="text-sm sm:text-base font-bold text-[#036FAA] font-['Poppins'] leading-tight">Tamil Nadu Government</h1>
+              <h2 className="text-xs text-[#036FAA] font-medium font-['Poppins'] leading-tight">NOC Application System</h2>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content - Flexible container */}
-      <div className="flex-1 flex items-center justify-center px-4 pb-4">
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-4xl">
+      {/* Main Content - Flexible container that takes remaining space */}
+      <div className="flex-1 flex items-center justify-center px-4 pb-3 overflow-hidden">
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-4xl h-full max-h-full flex items-center justify-center">
           
           {/* Mobile Layout (Single Column) */}
-          <div className="md:hidden">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              {/* Mobile Header Image */}
-              <div className="bg-gradient-to-br from-[#036FAA] to-[#025580] p-6 flex items-center justify-center">
-                <div className="bg-white backdrop-blur-sm rounded-2xl p-4 w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
+          <div className="md:hidden w-full">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden max-h-full flex flex-col">
+              {/* Mobile Header Image - Reduced height */}
+              <div className="bg-gradient-to-br from-[#036FAA] to-[#025580] p-4 flex items-center justify-center flex-shrink-0">
+                <div className="bg-white backdrop-blur-sm rounded-2xl p-3 w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
                   <img src="/images/login.png" alt="Government Illustration" className="w-full h-full object-contain rounded-xl" />
                 </div>
               </div>
 
-              {/* Mobile Form */}
-              <div className="p-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-[#036FAA] mb-6 text-center">Login</h2>
+              {/* Mobile Form - Scrollable if needed */}
+              <div className="p-4 flex-1 overflow-y-auto">
+                <h2 className="text-lg sm:text-xl font-bold text-[#036FAA] mb-4 text-center">Login</h2>
                 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Email Field */}
                   <div>
                     <label className="block text-gray-700 text-sm font-medium mb-1">Email ID</label>
@@ -113,7 +113,7 @@ export default function LoginPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-3 py-2.5 sm:py-3 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
+                      className="w-full px-3 py-2 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-3 py-2.5 sm:py-3 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
+                      className="w-full px-3 py-2 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
                       placeholder="Enter your password"
                     />
                   </div>
@@ -140,7 +140,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={refreshCaptcha}
-                        className="p-2 text-[#036FAA] hover:text-[#025580] hover:bg-blue-50 rounded transition duration-200"
+                        className="p-2 text-[#036FAA] hover:text-[#025580] hover:bg-blue-50 rounded transition duration-200 flex-shrink-0"
                       >
                         <RefreshCw className="w-4 h-4" />
                       </button>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                       type="text"
                       value={captcha}
                       onChange={(e) => setCaptcha(e.target.value)}
-                      className="w-full px-3 py-2.5 sm:py-3 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
+                      className="w-full px-3 py-2 text-sm border border-blue-200 rounded focus:outline-none focus:ring-1 focus:ring-[#036FAA] focus:border-transparent transition duration-200"
                       placeholder="Enter captcha"
                     />
                   </div>
@@ -157,15 +157,15 @@ export default function LoginPage() {
                   {/* Login Button */}
                   <button
                     onClick={handleLogin}
-                    className="w-full bg-gradient-to-r from-[#036FAA] to-[#025580] text-white py-3 px-4 rounded hover:from-[#025580] hover:to-[#014060] focus:outline-none focus:ring-2 focus:ring-[#036FAA] focus:ring-offset-1 font-medium text-sm transition duration-200 transform hover:scale-[1.01] active:scale-[0.99]"
+                    className="w-full bg-gradient-to-r from-[#036FAA] to-[#025580] text-white py-2.5 px-4 rounded hover:from-[#025580] hover:to-[#014060] focus:outline-none focus:ring-2 focus:ring-[#036FAA] focus:ring-offset-1 font-medium text-sm transition duration-200 transform hover:scale-[1.01] active:scale-[0.99]"
                   >
                     Login
                   </button>
                 </div>
 
                 {/* Registration Link */}
-                <div className="mt-6 text-center">
-                  <p className="text-[#036FAA] text-sm mb-2">New NGO / Organization?</p>
+                <div className="mt-4 text-center">
+                  <p className="text-[#036FAA] text-sm mb-1">New NGO / Organization?</p>
                   <button
                     onClick={handleRegister}
                     className="text-[#036FAA] hover:text-[#025580] font-medium text-sm underline decoration-1 underline-offset-2 hover:decoration-[#025580] transition duration-200"
@@ -178,14 +178,14 @@ export default function LoginPage() {
           </div>
 
           {/* Desktop Layout (Two Columns) */}
-          <div className="hidden md:block">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden grid md:grid-cols-2 min-h-[600px] lg:min-h-[650px]">
+          <div className="hidden md:block w-full">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden grid md:grid-cols-2 h-[85vh] max-h-[600px] lg:max-h-[650px]">
               
               {/* Left Side - Illustration */}
               <div className="bg-gradient-to-br from-[#036FAA] to-[#025580] p-6 lg:p-8 flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-[#036FAA] opacity-10"></div>
                 <div className="relative z-10 text-center">
-                  <div className="bg-white backdrop-blur-sm rounded-3xl p-6 border border-white/30 w-48 h-48 lg:w-64 lg:h-64 flex flex-col items-center justify-center">
+                  <div className="bg-white backdrop-blur-sm rounded-3xl p-6 border border-white/30 w-40 h-40 lg:w-48 lg:h-48 flex flex-col items-center justify-center">
                     <div className="flex justify-center mb-4">
                       <img src="/images/login.png" alt="Government Illustration" className="w-full h-full object-contain rounded-2xl" />
                     </div>
@@ -233,7 +233,7 @@ export default function LoginPage() {
                         <button
                           type="button"
                           onClick={refreshCaptcha}
-                          className="p-1 text-[#036FAA] hover:text-[#025580] hover:bg-blue-50 rounded transition duration-200"
+                          className="p-1 text-[#036FAA] hover:text-[#025580] hover:bg-blue-50 rounded transition duration-200 flex-shrink-0"
                         >
                           <RefreshCw className="w-4 h-4" />
                         </button>
