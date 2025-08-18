@@ -4,11 +4,19 @@ import { ArrowLeft, Filter, Search, CheckCircle, Circle, ChevronLeft, ChevronRig
 // Tank Selection Component
 function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [areaType, setAreaType] = useState('rural'); // 'urban' or 'rural'
   const [filters, setFilters] = useState({
     district: '',
-    taluk: '',
+    // Rural filters
     block: '',
+    panchayat: '',
     village: '',
+    // Urban filters
+    ulbType: '',
+    ulbName: '',
+    zone: '',
+    ward: '',
+    // Common
     department: '',
     searchTerm: ''
   });
@@ -16,62 +24,241 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
   const tanksPerPage = 10;
 
   // Dropdown options
-  const districts = ['Chennai', 'Vellore', 'Madurai', 'Erode', 'Thanjavur'];
-  const taluks = ['Tambaram', 'Egmore', 'Gudiyatham', 'Usilampatti', 'Bhavani', 'Kumbakonam'];
-  const blocks = ['Tambaram', 'Egmore', 'Gudiyatham', 'Usilampatti', 'Bhavani', 'Kumbakonam'];
-  const villages = ['Kamakshi Village', 'Cooum Village', 'Palar Village', 'Vaigai Village', 'Bhavani Village', 'Cauvery Village'];
+  const districts = ['Chennai', 'Vellore', 'Madurai', 'Erode', 'Thanjavur', 'Coimbatore', 'Salem', 'Trichy'];
+  
+  // Rural options
+  const ruralBlocks = {
+    'Chennai': ['Tambaram', 'Pallavaram', 'Alandur'],
+    'Vellore': ['Gudiyatham', 'Vaniyambadi', 'Ambur'],
+    'Madurai': ['Usilampatti', 'Melur', 'Vadipatti'],
+    'Erode': ['Bhavani', 'Perundurai', 'Kodumudi'],
+    'Thanjavur': ['Kumbakonam', 'Papanasam', 'Thiruvidaimarudur'],
+    'Coimbatore': ['Pollachi', 'Valparai', 'Udumalaipettai'],
+    'Salem': ['Attur', 'Omalur', 'Sankagiri'],
+    'Trichy': ['Srirangam', 'Lalgudi', 'Musiri']
+  };
 
-  // Sample tanks data
-  const tanksData = [
-    {
-      id: 'T001', name: 'Palar Tank', location: 'Vellore', taluk: 'Gudiyatham', block: 'Gudiyatham', village: 'Palar Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority'
+  const ruralPanchayats = {
+    'Tambaram': ['Tambaram East', 'Tambaram West', 'Selaiyur'],
+    'Gudiyatham': ['Gudiyatham Town', 'Melakottaiyur', 'Palar'],
+    'Usilampatti': ['Usilampatti Town', 'Vaigai', 'Sholavandan'],
+    'Bhavani': ['Bhavani Town', 'Amaravathi', 'Noyyal'],
+    'Kumbakonam': ['Kumbakonam Town', 'Cauvery', 'Kollidam'],
+    'Pollachi': ['Pollachi Town', 'Noyyal Basin', 'Aliyar'],
+    'Attur': ['Attur Town', 'Mettur', 'Krishnagiri'],
+    'Srirangam': ['Srirangam Town', 'Kallanai', 'Kollidam']
+  };
+
+  const ruralVillages = {
+    'Tambaram East': ['Kamakshi Village', 'Selaiyur Village', 'Chitlapakkam Village'],
+    'Gudiyatham Town': ['Palar Village', 'Vellar Village', 'Gadilam Village'],
+    'Usilampatti Town': ['Vaigai Village', 'Periyar Village', 'Sankarankovil Village'],
+    'Bhavani Town': ['Bhavani Village', 'Amaravathi Village', 'Bhavanisagar Village'],
+    'Kumbakonam Town': ['Cauvery Village', 'Kollidam Village', 'Kallanai Village'],
+    'Pollachi Town': ['Noyyal Village', 'Aliyar Village', 'Siruvani Village'],
+    'Attur Town': ['Mettur Village', 'Salem Village', 'Krishnagiri Village'],
+    'Srirangam Town': ['Trichy Village', 'Cauvery Village', 'Kallanai Village']
+  };
+
+  // Urban options
+  const ulbTypes = ['Corporation', 'Municipality', 'Town Panchayat'];
+  
+  const ulbNames = {
+    'Chennai': {
+      'Corporation': ['Greater Chennai Corporation'],
+      'Municipality': ['Tambaram Municipality', 'Avadi Municipality'],
+      'Town Panchayat': ['Pallavaram', 'Chromepet']
     },
-    {
-      id: 'T002', name: 'Kamakshi Tank', location: 'Chennai', taluk: 'Tambaram', block: 'Tambaram', village: 'Kamakshi Village', ownershipName: 'Greater Chennai Corporation', department: 'GCC', status: 'Priority'
+    'Vellore': {
+      'Corporation': ['Vellore Corporation'],
+      'Municipality': ['Gudiyatham Municipality', 'Vaniyambadi Municipality'],
+      'Town Panchayat': ['Ambur', 'Tirupattur']
     },
-    {
-      id: 'T003', name: 'Vaigai Tank', location: 'Madurai', taluk: 'Usilampatti', block: 'Usilampatti', village: 'Vaigai Village', ownershipName: 'Revenue Department', department: 'RD', status: 'Priority'
+    'Madurai': {
+      'Corporation': ['Madurai Corporation'],
+      'Municipality': ['Usilampatti Municipality', 'Melur Municipality'],
+      'Town Panchayat': ['Vadipatti', 'Sholavandan']
     },
-    {
-      id: 'T004', name: 'Cooum Tank', location: 'Chennai', taluk: 'Egmore', block: 'Egmore', village: 'Cooum Village', ownershipName: 'Forest Department', department: 'Forest', status: 'Priority'
-    },
-    {
-      id: 'T005', name: 'Bhavani Tank', location: 'Erode', taluk: 'Bhavani', block: 'Bhavani', village: 'Bhavani Village', ownershipName: 'Highways & Rural Development', department: 'HR & CE', status: 'Priority'
-    },
-    {
-      id: 'T006', name: 'Cauvery Tank', location: 'Thanjavur', taluk: 'Kumbakonam', block: 'Kumbakonam', village: 'Cauvery Village', ownershipName: 'Directorate of Town Planning', department: 'DTP', status: 'Priority'
-    },
-    {
-      id: 'T007', name: 'Adyar Tank', location: 'Chennai', taluk: 'Tambaram', block: 'Tambaram', village: 'Kamakshi Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority'
-    },
-    {
-      id: 'T008', name: 'Ponnaiyar Tank', location: 'Vellore', taluk: 'Gudiyatham', block: 'Gudiyatham', village: 'Palar Village', ownershipName: 'Revenue Department', department: 'RD', status: 'Priority'
+    'Coimbatore': {
+      'Corporation': ['Coimbatore Corporation'],
+      'Municipality': ['Pollachi Municipality', 'Valparai Municipality'],
+      'Town Panchayat': ['Udumalaipettai', 'Mettupalayam']
     }
+  };
+
+  const zones = {
+    'Greater Chennai Corporation': ['Zone 1 - Anna Nagar', 'Zone 2 - Teynampet', 'Zone 3 - Kodambakkam', 'Zone 4 - Tondiarpet'],
+    'Vellore Corporation': ['Zone A - Fort', 'Zone B - Katpadi', 'Zone C - Gandhi Nagar'],
+    'Madurai Corporation': ['Zone 1 - Central', 'Zone 2 - Anna Nagar', 'Zone 3 - KK Nagar'],
+    'Coimbatore Corporation': ['Zone 1 - Central', 'Zone 2 - East', 'Zone 3 - West', 'Zone 4 - North']
+  };
+
+  const wards = {
+    'Zone 1 - Anna Nagar': ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'],
+    'Zone 2 - Teynampet': ['Ward 6', 'Ward 7', 'Ward 8', 'Ward 9', 'Ward 10'],
+    'Zone 3 - Kodambakkam': ['Ward 11', 'Ward 12', 'Ward 13', 'Ward 14', 'Ward 15'],
+    'Zone 4 - Tondiarpet': ['Ward 16', 'Ward 17', 'Ward 18', 'Ward 19', 'Ward 20'],
+    'Zone A - Fort': ['Ward A1', 'Ward A2', 'Ward A3', 'Ward A4'],
+    'Zone B - Katpadi': ['Ward B1', 'Ward B2', 'Ward B3', 'Ward B4'],
+    'Zone C - Gandhi Nagar': ['Ward C1', 'Ward C2', 'Ward C3', 'Ward C4'],
+    'Zone 1 - Central': ['Ward 1', 'Ward 2', 'Ward 3', 'Ward 4'],
+    'Zone 2 - Anna Nagar': ['Ward 5', 'Ward 6', 'Ward 7', 'Ward 8'],
+    'Zone 3 - KK Nagar': ['Ward 9', 'Ward 10', 'Ward 11', 'Ward 12'],
+    'Zone 2 - East': ['Ward E1', 'Ward E2', 'Ward E3', 'Ward E4'],
+    'Zone 3 - West': ['Ward W1', 'Ward W2', 'Ward W3', 'Ward W4'],
+    'Zone 4 - North': ['Ward N1', 'Ward N2', 'Ward N3', 'Ward N4']
+  };
+
+  // Updated departments list
+  const departments = ['GCC', 'DTP', 'WRD', 'DMA', 'Forest', 'HR & CE'];
+
+  // Department color mapping
+  const departmentColors = {
+    'GCC': 'bg-blue-50',
+    'DTP': 'bg-green-50', 
+    'WRD': 'bg-cyan-50',
+    'DMA': 'bg-orange-50',
+    'Forest': 'bg-emerald-50',
+    'HR & CE': 'bg-purple-50'
+  };
+
+  // Expanded tanks data with updated departments
+  const tanksData = [
+    { id: 'T001', name: 'Palar Tank', areaType: 'rural', location: 'Vellore', block: 'Gudiyatham', panchayat: 'Gudiyatham Town', village: 'Palar Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority' },
+    { id: 'T002', name: 'Kamakshi Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 1 - Anna Nagar', ward: 'Ward 1', ownershipName: 'Greater Chennai Corporation', department: 'GCC', status: 'Priority' },
+    { id: 'T003', name: 'Vaigai Tank', areaType: 'rural', location: 'Madurai', block: 'Usilampatti', panchayat: 'Usilampatti Town', village: 'Vaigai Village', ownershipName: 'District Town Panchayat', department: 'DTP', status: 'Priority' },
+    { id: 'T004', name: 'Cooum Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 2 - Teynampet', ward: 'Ward 6', ownershipName: 'Forest Department', department: 'Forest', status: 'Normal' },
+    { id: 'T005', name: 'Bhavani Tank', areaType: 'rural', location: 'Erode', block: 'Bhavani', panchayat: 'Bhavani Town', village: 'Bhavani Village', ownershipName: 'District Town Panchayat', department: 'DTP', status: 'Priority' },
+    { id: 'T006', name: 'Cauvery Tank', areaType: 'rural', location: 'Thanjavur', block: 'Kumbakonam', panchayat: 'Kumbakonam Town', village: 'Cauvery Village', ownershipName: 'Disaster Management Authority', department: 'DMA', status: 'Normal' },
+    { id: 'T007', name: 'Adyar Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 3 - Kodambakkam', ward: 'Ward 11', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority' },
+    { id: 'T008', name: 'Ponnaiyar Tank', areaType: 'rural', location: 'Vellore', block: 'Gudiyatham', panchayat: 'Gudiyatham Town', village: 'Palar Village', ownershipName: 'HR & CE Department', department: 'HR & CE', status: 'Normal' },
+    { id: 'T009', name: 'Noyyal Tank', areaType: 'rural', location: 'Coimbatore', block: 'Pollachi', panchayat: 'Pollachi Town', village: 'Noyyal Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority' },
+    { id: 'T010', name: 'Amaravathi Tank', areaType: 'rural', location: 'Erode', block: 'Bhavani', panchayat: 'Bhavani Town', village: 'Amaravathi Village', ownershipName: 'District Town Panchayat', department: 'DTP', status: 'Normal' },
+    { id: 'T011', name: 'Kollidam Tank', areaType: 'rural', location: 'Thanjavur', block: 'Kumbakonam', panchayat: 'Kumbakonam Town', village: 'Kollidam Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority' },
+    { id: 'T012', name: 'Salem Tank', areaType: 'rural', location: 'Salem', block: 'Attur', panchayat: 'Attur Town', village: 'Salem Village', ownershipName: 'Forest Department', department: 'Forest', status: 'Normal' },
+    { id: 'T013', name: 'Trichy Tank', areaType: 'rural', location: 'Trichy', block: 'Srirangam', panchayat: 'Srirangam Town', village: 'Trichy Village', ownershipName: 'District Town Panchayat', department: 'DTP', status: 'Priority' },
+    { id: 'T014', name: 'Vellar Tank', areaType: 'rural', location: 'Vellore', block: 'Gudiyatham', panchayat: 'Gudiyatham Town', village: 'Palar Village', ownershipName: 'HR & CE Department', department: 'HR & CE', status: 'Normal' },
+    { id: 'T015', name: 'Korttalaiyar Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 4 - Tondiarpet', ward: 'Ward 16', ownershipName: 'Greater Chennai Corporation', department: 'GCC', status: 'Priority' },
+    { id: 'T016', name: 'Thamirabarani Tank', areaType: 'rural', location: 'Madurai', block: 'Usilampatti', panchayat: 'Usilampatti Town', village: 'Vaigai Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Normal' },
+    { id: 'T017', name: 'Gadilam Tank', areaType: 'rural', location: 'Vellore', block: 'Gudiyatham', panchayat: 'Gudiyatham Town', village: 'Palar Village', ownershipName: 'Disaster Management Authority', department: 'DMA', status: 'Priority' },
+    { id: 'T018', name: 'Buckingham Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 1 - Anna Nagar', ward: 'Ward 2', ownershipName: 'Greater Chennai Corporation', department: 'GCC', status: 'Normal' },
+    { id: 'T019', name: 'Siruvani Tank', areaType: 'rural', location: 'Coimbatore', block: 'Pollachi', panchayat: 'Pollachi Town', village: 'Noyyal Village', ownershipName: 'Forest Department', department: 'Forest', status: 'Priority' },
+    { id: 'T020', name: 'Mettur Tank', areaType: 'rural', location: 'Salem', block: 'Attur', panchayat: 'Attur Town', village: 'Mettur Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Normal' },
+    { id: 'T021', name: 'Krishnagiri Tank', areaType: 'rural', location: 'Salem', block: 'Attur', panchayat: 'Attur Town', village: 'Krishnagiri Village', ownershipName: 'HR & CE Department', department: 'HR & CE', status: 'Priority' },
+    { id: 'T022', name: 'Kallanai Tank', areaType: 'rural', location: 'Trichy', block: 'Srirangam', panchayat: 'Srirangam Town', village: 'Kallanai Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Normal' },
+    { id: 'T023', name: 'Periyar Tank', areaType: 'rural', location: 'Madurai', block: 'Usilampatti', panchayat: 'Usilampatti Town', village: 'Vaigai Village', ownershipName: 'Forest Department', department: 'Forest', status: 'Priority' },
+    { id: 'T024', name: 'Sankarankovil Tank', areaType: 'rural', location: 'Madurai', block: 'Usilampatti', panchayat: 'Usilampatti Town', village: 'Vaigai Village', ownershipName: 'Disaster Management Authority', department: 'DMA', status: 'Normal' },
+    { id: 'T025', name: 'Aliyar Tank', areaType: 'rural', location: 'Coimbatore', block: 'Pollachi', panchayat: 'Pollachi Town', village: 'Aliyar Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Priority' },
+    { id: 'T026', name: 'Bhavanisagar Tank', areaType: 'rural', location: 'Erode', block: 'Bhavani', panchayat: 'Bhavani Town', village: 'Bhavanisagar Village', ownershipName: 'Water Resources Department', department: 'WRD', status: 'Normal' },
+    { id: 'T027', name: 'Stanley Tank', areaType: 'urban', location: 'Chennai', ulbType: 'Corporation', ulbName: 'Greater Chennai Corporation', zone: 'Zone 2 - Teynampet', ward: 'Ward 7', ownershipName: 'Greater Chennai Corporation', department: 'GCC', status: 'Priority' }
   ];
 
-  // Filter tanks based on search and filters
-  const filteredTanks = tanksData.filter(tank => {
-    const matchesSearch = filters.searchTerm === '' || 
-      tank.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-      tank.location.toLowerCase().includes(filters.searchTerm.toLowerCase());
-    
-    const matchesDistrict = filters.district === '' || 
-      tank.location.toLowerCase().includes(filters.district.toLowerCase());
-    
-    const matchesTaluk = filters.taluk === '' || 
-      tank.taluk.toLowerCase().includes(filters.taluk.toLowerCase());
-    
-    const matchesBlock = filters.block === '' || 
-      tank.block.toLowerCase().includes(filters.block.toLowerCase());
-    
-    const matchesVillage = filters.village === '' || 
-      tank.village.toLowerCase().includes(filters.village.toLowerCase());
+const handleAreaTypeChange = (type) => {
+    setAreaType(type);
+    // Reset all filters when switching area type
+    setFilters({
+      district: '',
+      block: '',
+      panchayat: '',
+      village: '',
+      ulbType: '',
+      ulbName: '',
+      zone: '',
+      ward: '',
+      department: '',
+      searchTerm: ''
+    });
+  };
 
-    const matchesDepartment = filters.department === '' || 
-      tank.department === filters.department;
+  const handleFilterChange = (field, value) => {
+    const newFilters = { ...filters, [field]: value };
+    
+    // Reset dependent filters when parent changes
+    if (field === 'district') {
+      newFilters.block = '';
+      newFilters.panchayat = '';
+      newFilters.village = '';
+      newFilters.ulbType = '';
+      newFilters.ulbName = '';
+      newFilters.zone = '';
+      newFilters.ward = '';
+    } else if (field === 'block') {
+      newFilters.panchayat = '';
+      newFilters.village = '';
+    } else if (field === 'panchayat') {
+      newFilters.village = '';
+    } else if (field === 'ulbType') {
+      newFilters.ulbName = '';
+      newFilters.zone = '';
+      newFilters.ward = '';
+    } else if (field === 'ulbName') {
+      newFilters.zone = '';
+      newFilters.ward = '';
+    } else if (field === 'zone') {
+      newFilters.ward = '';
+    }
+    
+    setFilters(newFilters);
+  };
 
-    return matchesSearch && matchesDistrict && matchesTaluk && matchesBlock && matchesVillage && matchesDepartment;
-  });
+const clearFilters = () => {
+ setFilters({
+   district: '',
+   block: '',
+   panchayat: '',
+   village: '',
+   ulbType: '',
+   ulbName: '',
+   zone: '',
+   ward: '',
+   department: '',
+   searchTerm: ''
+ });
+};
+
+// Filter tanks based on search, area type and hierarchical filters
+const filteredTanks = tanksData.filter(tank => {
+ // Filter by area type first
+ if (tank.areaType !== areaType) return false;
+
+ const matchesSearch = filters.searchTerm === '' || 
+   tank.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+   tank.location.toLowerCase().includes(filters.searchTerm.toLowerCase());
+   
+ const matchesDistrict = filters.district === '' || 
+   tank.location.toLowerCase().includes(filters.district.toLowerCase());
+
+ const matchesDepartment = filters.department === '' || 
+   tank.department === filters.department;
+
+ if (areaType === 'rural') {
+   const matchesBlock = filters.block === '' || 
+     tank.block?.toLowerCase().includes(filters.block.toLowerCase());
+     
+   const matchesPanchayat = filters.panchayat === '' || 
+     tank.panchayat?.toLowerCase().includes(filters.panchayat.toLowerCase());
+     
+   const matchesVillage = filters.village === '' || 
+     tank.village?.toLowerCase().includes(filters.village.toLowerCase());
+
+   return matchesSearch && matchesDistrict && matchesBlock && matchesPanchayat && matchesVillage && matchesDepartment;
+ } else {
+   // Urban filters
+   const matchesUlbType = filters.ulbType === '' || 
+     tank.ulbType === filters.ulbType;
+     
+   const matchesUlbName = filters.ulbName === '' || 
+     tank.ulbName === filters.ulbName;
+     
+   const matchesZone = filters.zone === '' || 
+     tank.zone === filters.zone;
+     
+   const matchesWard = filters.ward === '' || 
+     tank.ward === filters.ward;
+
+   return matchesSearch && matchesDistrict && matchesUlbType && matchesUlbName && matchesZone && matchesWard && matchesDepartment;
+ }
+});
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredTanks.length / tanksPerPage);
@@ -91,24 +278,6 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
     }
   };
 
-  const handleFilterChange = (field, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      district: '',
-      taluk: '',
-      block: '',
-      village: '',
-      department: '',
-      searchTerm: ''
-    });
-  };
-
   const handleNext = () => {
     if (selectedTanks.length === 0) {
       alert('Please select at least one tank');
@@ -121,17 +290,32 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
     setCurrentPage(page);
   };
 
-  const getDepartmentColor = (department) => {
-    switch(department) {
-      case 'WRD': return 'bg-blue-100 text-blue-700 border-blue-200';
-      case 'RD': return 'bg-green-100 text-green-700 border-green-200';
-      case 'GCC': return 'bg-purple-100 text-purple-700 border-purple-200';
-      case 'Forest': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      case 'HR & CE': return 'bg-orange-100 text-orange-700 border-orange-200';
-      case 'DTP': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
-      case 'DMA': return 'bg-red-100 text-red-700 border-red-200';
-      default: return 'bg-gray-100 text-gray-700 border-gray-200';
+  // Get available options based on current selections
+  const getAvailableBlocks = () => {
+    return filters.district ? (ruralBlocks[filters.district] || []) : [];
+  };
+
+  const getAvailablePanchayats = () => {
+    return filters.block ? (ruralPanchayats[filters.block] || []) : [];
+  };
+
+  const getAvailableVillages = () => {
+    return filters.panchayat ? (ruralVillages[filters.panchayat] || []) : [];
+  };
+
+  const getAvailableUlbNames = () => {
+    if (filters.district && filters.ulbType) {
+      return ulbNames[filters.district]?.[filters.ulbType] || [];
     }
+    return [];
+  };
+
+  const getAvailableZones = () => {
+    return filters.ulbName ? (zones[filters.ulbName] || []) : [];
+  };
+
+  const getAvailableWards = () => {
+    return filters.zone ? (wards[filters.zone] || []) : [];
   };
 
   return (
@@ -160,53 +344,110 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
           </p>
         </div>
 
-        {/* Responsive Filter Section */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 space-y-2 sm:space-y-0">
-            <div className="flex items-center space-x-2">
-              <Filter className="w-4 h-4 text-indigo-600" />
-              <span className="font-semibold text-gray-800">Filters</span>
-            </div>
-            <button 
-              onClick={clearFilters}
-              className="text-indigo-600 text-sm font-medium hover:text-indigo-700 transition-colors self-start sm:self-auto"
-            >
-              Clear All
-            </button>
-          </div>
+  <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-lg shadow-sm p-4 mb-4 border border-teal-200">
+  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 space-y-3 lg:space-y-0">
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-6">
+      <div className="flex items-center space-x-2">
+        <Filter className="w-4 h-4 text-indigo-600" />
+        <span className="font-semibold text-gray-800">Filters</span>
+      </div>
+      
+      {/* Area Type Selection inline with Filters */}
+      <div className="flex items-center space-x-4">
+        <span className="font-semibold text-gray-800">Area Type:</span>
+        <div className="flex items-center space-x-4">
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name="areaType"
+              value="rural"
+              checked={areaType === 'rural'}
+              onChange={(e) => handleAreaTypeChange(e.target.value)}
+              className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500"
+            />
+            <span className="text-sm font-medium text-gray-900">Rural</span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name="areaType"
+              value="urban"
+              checked={areaType === 'urban'}
+              onChange={(e) => handleAreaTypeChange(e.target.value)}
+              className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 focus:ring-indigo-500"
+            />
+            <span className="text-sm font-medium text-gray-900">Urban</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <button 
+      onClick={clearFilters}
+      className="text-indigo-600 text-sm font-medium hover:text-indigo-700 transition-colors self-start lg:self-auto"
+    >
+      Clear All
+    </button>
+  </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-            <select value={filters.district} onChange={(e) => handleFilterChange('district', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">All Districts</option>
-              {districts.map(district => (<option key={district} value={district}>{district}</option>))}
-            </select>
-            <select value={filters.taluk} onChange={(e) => handleFilterChange('taluk', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">All Taluks</option>
-              {taluks.map(taluk => (<option key={taluk} value={taluk}>{taluk}</option>))}
-            </select>
-            <select value={filters.block} onChange={(e) => handleFilterChange('block', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">All Blocks</option>
-              {blocks.map(block => (<option key={block} value={block}>{block}</option>))}
-            </select>
-            <select value={filters.village} onChange={(e) => handleFilterChange('village', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">All Villages</option>
-              {villages.map(village => (<option key={village} value={village}>{village}</option>))}
-            </select>
-            <select value={filters.department} onChange={(e) => handleFilterChange('department', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">All Departments</option>
-              <option value="WRD">WRD</option>
-              <option value="RD">RD</option>
-              <option value="GCC">GCC</option>
-              <option value="Forest">Forest</option>
-              <option value="HR & CE">HR & CE</option>
-              <option value="DTP">DTP</option>
-              <option value="DMA">DMA</option>
-            </select>
-            <div className="relative">
-              <input type="text" placeholder="Search tanks..." value={filters.searchTerm} onChange={(e) => handleFilterChange('searchTerm', e.target.value)} className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
-              <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" />
+          {areaType === 'rural' ? (
+            /* Rural Filters */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+              <select value={filters.district} onChange={(e) => handleFilterChange('district', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">All Districts</option>
+                {districts.map(district => (<option key={district} value={district}>{district}</option>))}
+              </select>
+              <select value={filters.block} onChange={(e) => handleFilterChange('block', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.district}>
+                <option value="">All Blocks</option>
+                {getAvailableBlocks().map(block => (<option key={block} value={block}>{block}</option>))}
+              </select>
+              <select value={filters.panchayat} onChange={(e) => handleFilterChange('panchayat', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.block}>
+                <option value="">All Panchayat Villages</option>
+                {getAvailablePanchayats().map(panchayat => (<option key={panchayat} value={panchayat}>{panchayat}</option>))}
+              </select>
+         
+              <select value={filters.department} onChange={(e) => handleFilterChange('department', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">All Departments</option>
+                {departments.map(dept => (<option key={dept} value={dept}>{dept}</option>))}
+              </select>
+              <div className="relative">
+                <input type="text" placeholder="Search tanks..." value={filters.searchTerm} onChange={(e) => handleFilterChange('searchTerm', e.target.value)} className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" />
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Urban Filters */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-3">
+              <select value={filters.district} onChange={(e) => handleFilterChange('district', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">All Districts</option>
+                {districts.map(district => (<option key={district} value={district}>{district}</option>))}
+              </select>
+              <select value={filters.ulbType} onChange={(e) => handleFilterChange('ulbType', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.district}>
+                <option value="">All ULB Types</option>
+                {ulbTypes.map(type => (<option key={type} value={type}>{type}</option>))}
+              </select>
+              <select value={filters.ulbName} onChange={(e) => handleFilterChange('ulbName', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.ulbType}>
+                <option value="">All ULB Names</option>
+                {getAvailableUlbNames().map(name => (<option key={name} value={name}>{name}</option>))}
+              </select>
+              <select value={filters.zone} onChange={(e) => handleFilterChange('zone', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.ulbName}>
+                <option value="">All Zones</option>
+                {getAvailableZones().map(zone => (<option key={zone} value={zone}>{zone}</option>))}
+              </select>
+              <select value={filters.ward} onChange={(e) => handleFilterChange('ward', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" disabled={!filters.zone}>
+                <option value="">All Wards</option>
+                {getAvailableWards().map(ward => (<option key={ward} value={ward}>{ward}</option>))}
+              </select>
+              <select value={filters.department} onChange={(e) => handleFilterChange('department', e.target.value)} className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <option value="">All Departments</option>
+                {departments.map(dept => (<option key={dept} value={dept}>{dept}</option>))}
+              </select>
+              <div className="relative">
+                <input type="text" placeholder="Search tanks..." value={filters.searchTerm} onChange={(e) => handleFilterChange('searchTerm', e.target.value)} className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Selected Tanks Summary */}
@@ -227,37 +468,63 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
           </div>
         )}
 
-        {/* Responsive Tank Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
+        {/* Tank Cards Grid with Department Colors */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
           {currentTanks.map((tank) => {
             const isSelected = selectedTanks.find(t => t.id === tank.id);
-            return (
-              <div key={tank.id} onClick={() => handleTankSelection(tank)} className={`bg-white rounded-lg shadow-sm border-2 transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105 group ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-100' : 'border-gray-200'} hover:border-gray-300`}>
-                <div className={`p-2 border-b border-gray-100 ${isSelected ? 'bg-indigo-50' : tank.department === 'WRD' ? 'bg-blue-100' : tank.department === 'RD' ? 'bg-green-100' : tank.department === 'GCC' ? 'bg-purple-100' : tank.department === 'Forest' ? 'bg-emerald-100' : tank.department === 'HR & CE' ? 'bg-orange-100' : tank.department === 'DTP' ? 'bg-indigo-100' : tank.department === 'DMA' ? 'bg-red-100' : 'bg-gray-100'}`}>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3">
-                      <div className="mt-0.5">
-                        {isSelected ? (<CheckCircle className="w-5 h-5 text-indigo-600" />) : (<Circle className="w-5 h-5 text-gray-400 group-hover:text-indigo-400" />)}
+            const isPriority = tank.status === 'Priority';
+            const departmentColor = departmentColors[tank.department] || 'bg-gray-50';
+            
+return (
+  <div key={tank.id} onClick={() => handleTankSelection(tank)} className={`bg-white rounded-lg shadow-sm border-2 transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-105 group overflow-hidden ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-100' : isPriority ? 'border-red-500' : 'border-gray-200'} hover:border-gray-300`}>
+    {/* Department Color Header extending to district */}
+    <div className={`p-4 ${departmentColor}`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-start space-x-3">
+          <div className="mt-0.5">
+            {isSelected ? (<CheckCircle className="w-5 h-5 text-indigo-600" />) : (<Circle className="w-5 h-5 text-gray-400 group-hover:text-indigo-400" />)}
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900 text-sm leading-tight">{tank.name}</h3>
+            <p className="text-xs text-gray-600 mt-1">{tank.location}</p>
+          </div>
+        </div>
+        <span className={`px-2 py-1 text-xs font-medium rounded-full border ${isPriority ? 'bg-red-100 text-red-700 border-red-200' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+          {tank.status}
+        </span>
+      </div>
+    </div>
+    
+    <div className="p-4">
+                  <div className="space-y-2 text-sm">
+                    {areaType === 'rural' ? (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Block:</span>
+                          <span className="font-medium text-gray-900">{tank.block}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Village:</span>
+                          <span className="font-medium text-gray-900">{tank.village}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">ULB:</span>
+                          <span className="font-medium text-gray-900 text-xs">{tank.ulbName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Ward:</span>
+                          <span className="font-medium text-gray-900">{tank.ward}</span>
+                        </div>
+                      </>
+                    )}
+                    <div className="pt-2 border-t border-gray-100">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-500 text-xs">Department:</span>
+                        <span className="font-medium text-gray-900 text-xs text-right">{tank.department}</span>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 text-sm">{tank.name}</h3>
-                        <p className="text-xs text-gray-600">{tank.location}</p>
-                      </div>
-                    </div>
-                    <span className="px-2 py-1 text-xs font-medium rounded-full border bg-red-100 text-red-700 border-red-200">{tank.status}</span>
-                  </div>
-                </div>
-                <div className="p-2">
-                  <div className="grid grid-cols-2 gap-2 text-sm mb-2">
-                    <div><span className="text-gray-500 block text-xs">Taluk</span><span className="font-medium text-gray-900">{tank.taluk}</span></div>
-                    <div><span className="text-gray-500 block text-xs">Block</span><span className="font-medium text-gray-900">{tank.block}</span></div>
-                    <div className="col-span-2"><span className="text-gray-500 block text-xs">Village</span><span className="font-medium text-gray-900">{tank.village}</span></div>
-                  </div>
-                  <div className="pt-2 border-t border-gray-100">
-                    <span className="text-gray-500 text-xs block mb-1">Ownership</span>
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-900 text-xs">{tank.ownershipName}</span>
-                      <span className={`text-xs px-2 py-1 rounded border font-medium ${getDepartmentColor(tank.department)}`}>{tank.department}</span>
                     </div>
                   </div>
                 </div>
@@ -277,8 +544,18 @@ function TankSelection({ onTanksSelected, selectedTanks, setSelectedTanks }) {
                 <ChevronLeft className="w-4 h-4" /><span className="hidden sm:inline">Previous</span>
               </button>
               <div className="flex space-x-1">
-                {[...Array(totalPages)].map((_, index) => {
-                  const page = index + 1;
+                {[...Array(Math.min(totalPages, 5))].map((_, index) => {
+                  let page;
+                  if (totalPages <= 5) {
+                    page = index + 1;
+                  } else if (currentPage <= 3) {
+                    page = index + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    page = totalPages - 4 + index;
+                  } else {
+                    page = currentPage - 2 + index;
+                  }
+                  
                   return (<button key={page} onClick={() => handlePageChange(page)} className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page ? 'bg-indigo-600 text-white' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'}`}>{page}</button>);
                 })}
               </div>
@@ -394,16 +671,72 @@ function NOCDetails({ selectedTanks, onBack }) {
     }));
   };
 
-  const handleFileUpload = (tankId, file, fileType) => {
+const handleFileUpload = (tankId, files, fileType) => {
+  if (fileType === 'beforePhoto') {
+    // Handle multiple photo uploads
+    const validFiles = [];
+    const errors = [];
+    
+    // Check if total files exceed limit
+    const currentFiles = tankConfigs[tankId]?.beforePhoto || [];
+    const totalFiles = currentFiles.length + files.length;
+    
+    if (totalFiles > 5) {
+      alert(`Maximum 5 photos allowed. You can add ${5 - currentFiles.length} more photos.`);
+      return;
+    }
+    
+    // Validate each file
+    Array.from(files).forEach(file => {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        errors.push(`${file.name} is not an image file`);
+        return;
+      }
+      
+      // Check file size (1MB = 1024 * 1024 bytes)
+      if (file.size > 1024 * 1024) {
+        errors.push(`${file.name} exceeds 1MB limit (${(file.size / (1024 * 1024)).toFixed(2)}MB)`);
+        return;
+      }
+      
+      validFiles.push(file);
+    });
+    
+    // Show errors if any
+    if (errors.length > 0) {
+      alert('Upload errors:\n' + errors.join('\n'));
+      if (validFiles.length === 0) return;
+    }
+    
+    // Update state with valid files
     setTankConfigs(prev => ({
       ...prev,
       [tankId]: {
         ...prev[tankId],
-        [fileType]: file
+        beforePhoto: [...(prev[tankId]?.beforePhoto || []), ...validFiles]
       }
     }));
-  };
-
+  } else {
+    // Handle single file uploads for other file types
+    setTankConfigs(prev => ({
+      ...prev,
+      [tankId]: {
+        ...prev[tankId],
+        [fileType]: files
+      }
+    }));
+  }
+};
+const removePhoto = (tankId, photoIndex) => {
+  setTankConfigs(prev => ({
+    ...prev,
+    [tankId]: {
+      ...prev[tankId],
+      beforePhoto: prev[tankId]?.beforePhoto?.filter((_, index) => index !== photoIndex) || []
+    }
+  }));
+};
   const handleSubmitClick = () => {
     // Validate all tanks have required data
     for (const tank of selectedTanks) {
@@ -416,10 +749,10 @@ function NOCDetails({ selectedTanks, onBack }) {
         alert(`Please enter a valid amount for ${tank.name}`);
         return;
       }
-      if (!config?.beforePhoto) {
-        alert(`Please upload before photo for ${tank.name}`);
-        return;
-      }
+if (!config?.beforePhoto || config.beforePhoto.length === 0) {
+  alert(`Please upload at least one before photo for ${tank.name}`);
+  return;
+}
       if (!config?.projectProposal) {
         alert(`Please upload project proposal for ${tank.name}`);
         return;
@@ -479,13 +812,13 @@ function NOCDetails({ selectedTanks, onBack }) {
           {selectedTanks.map((tank, index) => (
             <div key={tank.id} className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
               {/* Tank Header */}
-              <div className={`p-4 ${tank.department === 'WRD' ? 'bg-blue-100' : tank.department === 'RD' ? 'bg-green-100' : tank.department === 'GCC' ? 'bg-purple-100' : tank.department === 'Forest' ? 'bg-emerald-100' : tank.department === 'HR & CE' ? 'bg-orange-100' : tank.department === 'DTP' ? 'bg-indigo-100' : tank.department === 'DMA' ? 'bg-red-100' : 'bg-gray-100'}`}>
+              <div className="p-4 bg-gradient-to-r from-indigo-50 to-blue-50 border-b">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Tank #{index + 1}: {tank.name}</h3>
-                    <p className="text-sm text-gray-600">{tank.location} - {tank.department}</p>
+                    <p className="text-sm text-gray-600">{tank.location} • {tank.village}</p>
                   </div>
-                  <span className="text-sm text-gray-600 self-start sm:self-auto">ID: {tank.id}</span>
+           
                 </div>
               </div>
 
@@ -557,7 +890,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                 </div>
 
                 {/* Amount and File Uploads - Responsive Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Lumpsum Amount */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Lumpsum Amount (₹)</label>
@@ -570,33 +903,73 @@ function NOCDetails({ selectedTanks, onBack }) {
                     />
                   </div>
 
-                  {/* Before Photo Upload */}
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Before Photo *</label>
-                    <div className="border-2 border-dashed border-indigo-300 rounded-lg p-3 text-center hover:border-indigo-400 transition-colors bg-indigo-50 hover:bg-indigo-100">
-                      {tankConfigs[tank.id]?.beforePhoto ? (
-                        <div className="space-y-1">
-                          <div className="text-green-600 font-medium text-xs truncate">{tankConfigs[tank.id].beforePhoto.name}</div>
-                          <div className="text-xs text-gray-500">Photo uploaded</div>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <Upload className="w-5 h-5 text-indigo-400 mx-auto" />
-                          <div className="text-gray-600 text-xs">Upload Photo</div>
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileUpload(tank.id, e.target.files[0], 'beforePhoto')}
-                        className="hidden"
-                        id={`before-photo-${tank.id}`}
-                      />
-                      <label htmlFor={`before-photo-${tank.id}`} className="mt-2 inline-flex items-center px-3 py-1 border border-indigo-300 rounded text-xs font-medium text-indigo-700 bg-white hover:bg-indigo-50 cursor-pointer transition-colors">
-                        Choose Photo
-                      </label>
-                    </div>
-                  </div>
+{/* Before Photos Upload - Multiple */}
+<div className="col-span-1 sm:col-span-2 lg:col-span-2">
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Before Photos * (Max 5 photos, 1MB each)
+  </label>
+  
+  {/* Upload Area */}
+  <div className="border-2 border-dashed border-indigo-300 rounded-lg p-3 text-center hover:border-indigo-400 transition-colors bg-indigo-50 hover:bg-indigo-100 mb-3">
+    <div className="space-y-2">
+      <Upload className="w-5 h-5 text-indigo-400 mx-auto" />
+      <div className="text-gray-600 text-xs">
+        Upload Photos ({(tankConfigs[tank.id]?.beforePhoto || []).length}/5)
+      </div>
+    </div>
+    <input
+      type="file"
+      accept="image/*"
+      multiple
+      onChange={(e) => handleFileUpload(tank.id, e.target.files, 'beforePhoto')}
+      className="hidden"
+      id={`before-photo-${tank.id}`}
+      disabled={(tankConfigs[tank.id]?.beforePhoto || []).length >= 5}
+    />
+    <label 
+      htmlFor={`before-photo-${tank.id}`} 
+      className={`mt-2 inline-flex items-center px-3 py-1 border border-indigo-300 rounded text-xs font-medium transition-colors ${
+        (tankConfigs[tank.id]?.beforePhoto || []).length >= 5 
+          ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+          : 'text-indigo-700 bg-white hover:bg-indigo-50 cursor-pointer'
+      }`}
+    >
+      {(tankConfigs[tank.id]?.beforePhoto || []).length >= 5 ? 'Maximum Reached' : 'Choose Photos'}
+    </label>
+  </div>
+
+  {/* Display Uploaded Photos */}
+  {tankConfigs[tank.id]?.beforePhoto && tankConfigs[tank.id].beforePhoto.length > 0 && (
+    <div className="space-y-2">
+      <div className="text-xs font-medium text-gray-700">
+        Uploaded Photos ({tankConfigs[tank.id].beforePhoto.length}/5):
+      </div>
+      <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+        {tankConfigs[tank.id].beforePhoto.map((photo, index) => (
+          <div key={index} className="flex items-center justify-between bg-green-50 border border-green-200 rounded p-2">
+            <div className="flex-1 min-w-0">
+              <div className="text-green-700 font-medium text-xs truncate">
+                {photo.name}
+              </div>
+              <div className="text-xs text-green-600">
+                {(photo.size / (1024 * 1024)).toFixed(2)}MB
+              </div>
+            </div>
+            <button
+              onClick={() => removePhoto(tank.id, index)}
+              className="ml-2 text-red-500 hover:text-red-700 transition-colors"
+              title="Remove photo"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
 
                   {/* KML File Upload */}
                   <div>
@@ -654,9 +1027,6 @@ function NOCDetails({ selectedTanks, onBack }) {
                     </div>
                   </div>
                 </div>
-
-                {/* Tank Summary */}
-           
               </div>
             </div>
           ))}
@@ -780,7 +1150,7 @@ function NOCDetails({ selectedTanks, onBack }) {
                     setShowSuccessModal(false);
                     window.location.href = '/dashboard';
                   }}
-                  className="w-full bg-red-600 hover:bg-red-200 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                 >
                   Close
                 </button>
